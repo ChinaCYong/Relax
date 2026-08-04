@@ -1,7 +1,12 @@
 #!/bin/bash
-# 由 train.py 自动生成 —— 实验：video-feed-like-sft-9b  时间：20260710-184744
-# 单独重跑本次训练：
-#   RAY_ADDRESS=http://127.0.0.1:8265 bash /mnt/tidal-alsh-share2/dataset/gaike/guxuncheng/Projects/Rads/Relax/scripts/entrypoint/ray-job.sh /mnt/tidal-alsh-share2/dataset/gaike/guxuncheng/Projects/Rads/outputs/video-feed-like-sft-9b-20260710-184744/launch.sh
+
+# Copyright (c) 2026 Relax Authors. All Rights Reserved.
+#
+# Qwen3.5-9B 8xP800 colocate (sync) training script for DAPO math dataset.
+#
+# Usage:
+#   bash scripts/training/sft/run-qwen35-9B-8xklx.sh
+
 set -ex
 set -o pipefail
 
@@ -9,7 +14,6 @@ gpus_num=8
 export WORLD_SIZE=$(( gpus_num / 8 ))
 
 now=$(date "+%Y-%m-%d-%H:%M:%S")
-echo "当前时间: $now"
 
 export WORKDIR="${WORKDIR:-/workspace}"
 export MODEL_DIR="${MODEL_DIR:-/workspace}"
@@ -265,11 +269,6 @@ RUNTIME_ENV_JSON="{
     \"no_proxy\": \"localhost,127.0.0.1,10.0.0.0/8,172.16.0.0/12,192.168.0.0/16\"
   }
 }"
-   #  \"OPENBLAS_NUM_THREADS\": \"${CPU_THREADS_PER_ACTOR}\",
-   #  \"OMP_NUM_THREADS\": \"${CPU_THREADS_PER_ACTOR}\",
-   #  \"MKL_NUM_THREADS\": \"${CPU_THREADS_PER_ACTOR}\",
-   #  \"NUMEXPR_NUM_THREADS\": \"${CPU_THREADS_PER_ACTOR}\",
-
 
 mkdir -p log
 
@@ -292,17 +291,3 @@ ray job submit ${RAY_NO_WAIT:+--no-wait} --address="${RAY_JOB_ADDRESS}" \
    "${WANDB_ARGS[@]}" \
    "${PERF_ARGS[@]}" \
    "${MISC_ARGS[@]}" 2>&1 | tee log/qwen35-9B-mm-sft-${gpus_num}xklx-${now}.log
-
-# # ── 训练完成，导出 HF 权重（Megatron Bridge 转换） ─────────────────────────
-# # 以 GPU ray job 提交 → 落到 worker（head 无 GPU），避免在 head 上加载大模型 OOM。
-# echo "=== 导出 HF 权重 → /mnt/tidal-alsh-share2/dataset/gaike/guxuncheng/Projects/Rads/outputs/video-feed-like-sft-9b-20260710-184744/hf ==="
-# ray job submit --address="${RAY_JOB_ADDRESS}" \
-#    --entrypoint-num-gpus 1 \
-#    --runtime-env-json="${RUNTIME_ENV_JSON}" \
-#    -- python3 ${SCRIPT_DIR}/../../tools/convert_torch_dist_to_hf_bridge.py \
-#       --input-dir ${EXP_DIR}/sft/checkpoint/Qwen3-9B_mcore_${gpus_num}xklx/ \
-#       --output-dir ${EXP_DIR}/sft/hf/Qwen3-9B_mcore_${gpus_num}xklx/ \
-#       --origin-hf-dir ${MODEL_DIR}/Qwen3.5-9B \
-#       --force
-
-# echo "=== 全部完成。产物目录：/mnt/tidal-alsh-share2/dataset/gaike/guxuncheng/Projects/Rads/outputs/video-feed-like-sft-9b-20260710-184744 ==="

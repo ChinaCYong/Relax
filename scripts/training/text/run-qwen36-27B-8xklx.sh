@@ -14,7 +14,6 @@ gpus_num=8
 export WORLD_SIZE=$(( gpus_num / 8 ))
 
 now=$(date "+%Y-%m-%d-%H:%M:%S")
-echo "当前时间: $now"
 
 WORKDIR="${WORKDIR:-/workspace}"
 MODEL_DIR="${MODEL_DIR:-/workspace}"

@@ -1,7 +1,12 @@
 #!/bin/bash
-# 由 train.py 自动生成 —— 实验：video-feed-like-sft-9b  时间：20260710-184744
-# 单独重跑本次训练：
-#   RAY_ADDRESS=http://127.0.0.1:8265 bash /mnt/tidal-alsh-share2/dataset/gaike/guxuncheng/Projects/Rads/Relax/scripts/entrypoint/ray-job.sh /mnt/tidal-alsh-share2/dataset/gaike/guxuncheng/Projects/Rads/outputs/video-feed-like-sft-9b-20260710-184744/launch.sh
+
+# Copyright (c) 2026 Relax Authors. All Rights Reserved.
+#
+# Qwen3.5-9B 8xP800 colocate (sync) training script for DAPO math dataset.
+#
+# Usage:
+#   bash scripts/training/sft/run-qwen35-9B-32xklx.sh
+
 set -ex
 set -o pipefail
 
@@ -9,7 +14,6 @@ gpus_num=32
 export WORLD_SIZE=$(( gpus_num / 8 ))
 
 now=$(date "+%Y-%m-%d-%H:%M:%S")
-echo "当前时间: $now"
 
 export WORKDIR="${WORKDIR:-/workspace}"
 export MODEL_DIR="${MODEL_DIR:-/workspace}"
