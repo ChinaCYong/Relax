@@ -268,4 +268,3 @@ ray job submit ${RAY_NO_WAIT:+--no-wait} --address="${RAY_JOB_ADDRESS}" \
    "${WANDB_ARGS[@]}" \
    "${PERF_ARGS[@]}" \
    "${MISC_ARGS[@]}" 2>&1 | tee log/qwen35-9B-mm-sft-${gpus_num}xklx-${now}.log
-
