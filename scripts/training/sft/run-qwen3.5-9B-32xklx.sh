@@ -247,7 +247,6 @@ RUNTIME_ENV_JSON="{
     \"HYDRAX_USE_PROTEUS\": \"0\",
     \"http_proxy\": \"${WEB_PROXY}\",
     \"https_proxy\": \"${WEB_PROXY}\",
-    \"no_proxy\": \"localhost,127.0.0.1,10.0.0.0/8,172.16.0.0/12,192.168.0.0/16\"
   }
 }"
 
